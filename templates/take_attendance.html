@@ -13,7 +13,7 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
 
-  <title>AMS-GRP9 | Attendance Management System</title>
+  <title>AMS-GRP6 | Attendance Management System</title>
 
   <!-- bootstrap core css -->
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}" />
@@ -88,7 +88,7 @@
         <nav class="navbar navbar-expand-lg custom_nav-container ">
           <a class="navbar-brand" href="/">
             <span>
-              AMS-GRP9
+              AMS-GRP6
             </span>
           </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -284,6 +284,7 @@
                 .then(function(stream) {
                     video.srcObject = stream;
                     video.play();
+                    video.style.transform = 'scaleX(-1)';
                 })
                 .catch(function(err) {
                     console.log("An error occurred: " + err);

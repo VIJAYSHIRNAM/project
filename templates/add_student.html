@@ -13,7 +13,7 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
 
-  <title>AMS-GRP9 | Attendance Management System</title>
+  <title>AMS-GRP6 | Attendance Management System</title>
 
   <!-- bootstrap core css -->
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/bootstrap.css') }}" />
@@ -88,7 +88,7 @@
         <nav class="navbar navbar-expand-lg custom_nav-container ">
           <a class="navbar-brand" href="/">
             <span>
-              AMS-GRP9
+              AMS-GRP6
             </span>
           </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -115,9 +115,9 @@
               <div class="quote_btn-container">
                 <a href="">
                   <span>
-                    Login
+                    Logout
                   </span>
-                  <i class="fa fa-user" aria-hidden="true"></i>
+                  <i class="fa fa-sign-out" aria-hidden="true"></i>
                 </a>
               </div>
             </div>
@@ -130,13 +130,13 @@
   <!-- contact section -->
   <section class="contact_section layout_padding">
     <div class="container">
-      <div class="heading_container">
-        <b>
-          ADD STUDENT
-        </b>
-      </div>
       <div class="row">
         <div class="col-md-6">
+          <div class="heading_container">
+            <b>
+              ADD STUDENT
+            </b>
+          </div>
           <div class="form_container">
             <form action="/results/" method="POST">
               <div>
@@ -145,6 +145,17 @@
               <div>
                 <input type="text" placeholder="Name" max="10" name="regNo" />
               </div>
+              <div>
+                <select class="form-control" style="height: 50px;">
+                  <option>Select Course</option>
+                  <option>MS in Artificial Intelligence</option>
+                  <option>MS in Computer Science</option>
+                </select>
+              </div>
+              <div>&nbsp;</div>
+              <div id="captures" class="form-control" style="overflow-y: scroll; height: 183px; padding: 10px;">
+                <p>Captured Images Goes Here ....</p></div>
+              <div>&nbsp;</div>
               <div class="btn_box">
                 <button>
                   Train Data
@@ -153,8 +164,27 @@
             </form>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="contentarea">
+        <div class="col-md-6" align="center">
+          <video id="video" autoplay style="width: 84%; border: 1px solid grey; height: 350px;"></video>
+          <div class="form_container">
+            <table class="table" style="padding-bottom: 0px;">
+              <tr>
+                <td>
+                  <button id="toggleCamBtn" style="height: 35px; font-size: 10px; justify-content: center;">TURN OFF</button>
+                  <p style="font-size: 0px;">&nbsp;</p>
+                  <button id="captureBtn" style="height: 35px; font-size: 10px; justify-content: center;">Capture</button>
+                  <td style="justify-content: center; align-content: center;">
+                  <input type="number" id="numCaptures" value="5" min="1" style="font-size: 15px; border: 1px solid grey; width: 110px;">
+                  <p style="font-size: 12px;">Total Images: <span id="imgCnt">0</span></p>
+                </td>
+                <td>
+                  <button id="clearBtn" style="height: 35px; font-size: 10px; justify-content: center;">&nbsp;CLR DATA&nbsp;</button>
+                  <p style="font-size: 0px;">&nbsp;</p>
+                  <button id="addMoreBtn" style="height: 35px; font-size: 10px; justify-content: center;">ADD MORE</button></td>
+              </tr>
+            </table>
+          </div>
+          <!-- <div class="contentarea">
             <div class="camera">
                 <video id="video">Video stream not available.</video>
             </div>
@@ -164,7 +194,7 @@
             <div class="output">
                 <img id="photo" alt="The screen capture will appear in this box.">
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -274,89 +304,123 @@
   <!-- Google Map -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
   <!-- End Google Map -->
-<script>
-    /* JS comes here */
-    (function() {
+  <script type="text/javascript">const video = document.getElementById('video');
+    const capturesContainer = document.getElementById('captures');
+    const captureBtn = document.getElementById('captureBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const numCapturesInput = document.getElementById('numCaptures');
+    const toggleCamBtn = document.getElementById('toggleCamBtn');
+    let isCameraOn = true; // Track camera state
+    let blobData = new Array();
+    let mediaStream; // To store the video stream
 
-        var width = 320; // We will scale the photo width to this
-        var height = 0; // This will be computed based on the input stream
+    // Get video stream from user's camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            mediaStream = stream;
+            video.srcObject = stream;
+            video.style.transform = 'scaleX(-1)';
+        })
+        .catch(error => {
+            console.error('Error accessing camera:', error);
+        });
 
-        var streaming = false;
+    stopCamera();
+    captureBtn.addEventListener('click', () => {
 
-        var video = null;
-        var canvas = null;
-        var photo = null;
-        var startbutton = null;
-
-        function startup() {
-            video = document.getElementById('video');
-            canvas = document.getElementById('canvas');
-            photo = document.getElementById('photo');
-            startbutton = document.getElementById('startbutton');
-
-            navigator.mediaDevices.getUserMedia({
-                    video: true,
-                    audio: false
-                })
-                .then(function(stream) {
-                    video.srcObject = stream;
-                    video.play();
-                })
-                .catch(function(err) {
-                    console.log("An error occurred: " + err);
-                });
-
-            video.addEventListener('canplay', function(ev) {
-                if (!streaming) {
-                    height = video.videoHeight / (video.videoWidth / width);
-
-                    if (isNaN(height)) {
-                        height = width / (4 / 3);
-                    }
-
-                    video.setAttribute('width', width);
-                    video.setAttribute('height', height);
-                    canvas.setAttribute('width', width);
-                    canvas.setAttribute('height', height);
-                    streaming = true;
-                }
-            }, false);
-
-            startbutton.addEventListener('click', function(ev) {
-                takepicture();
-                ev.preventDefault();
-            }, false);
-
-            clearphoto();
+        while (capturesContainer.firstChild) {
+            capturesContainer.removeChild(capturesContainer.firstChild);
         }
+        blobData = new Array();
+        const numCaptures = parseInt(numCapturesInput.value, 10); // Get N from input
+        const interval = Math.floor(video.duration / numCaptures) * 1000; // Calculate time between captures in milliseconds
 
-
-        function clearphoto() {
-            var context = canvas.getContext('2d');
-            context.fillStyle = "#AAA";
-            context.fillRect(0, 0, canvas.width, canvas.height);
-
-            var data = canvas.toDataURL('image/png');
-            photo.setAttribute('src', data);
+        for (let i = 0; i < numCaptures; i++) {
+            setTimeout(() => {
+                const capture = captureFrame();
+                capturesContainer.appendChild(capture);
+            }, i * interval);
         }
+        console.log(blobData);
+        document.getElementById("imgCnt").textContent = numCaptures;//capturesContainer.childElementCount;
+    });
 
-        function takepicture() {
-            var context = canvas.getContext('2d');
-            if (width && height) {
-                canvas.width = width;
-                canvas.height = height;
-                context.drawImage(video, 0, 0, width, height);
+    clearBtn.addEventListener('click', () => {
+        blobData = new Array();
+        while (capturesContainer.firstChild) {
+            capturesContainer.removeChild(capturesContainer.firstChild);
+        } // Clear captured images
+        console.log(blobData);
+        document.getElementById("imgCnt").textContent = capturesContainer.childElementCount;
+    });
 
-                var data = canvas.toDataURL('image/png');
-                photo.setAttribute('src', data);
-            } else {
-                clearphoto();
-            }
+    const addMoreBtn = document.getElementById('addMoreBtn');
+
+    addMoreBtn.addEventListener('click', () => {
+        const numCaptures = parseInt(numCapturesInput.value, 10);
+        const interval = Math.floor(video.duration / numCaptures) * 1000;
+
+        for (let i = 0; i < numCaptures; i++) {
+            setTimeout(() => {
+                const capture = captureFrame();
+                capturesContainer.appendChild(capture);
+            }, i * interval);
         }
+        console.log(blobData);
+        document.getElementById("imgCnt").textContent = capturesContainer.childElementCount;
+    });
 
-        window.addEventListener('load', startup, false);
-    })();
-    </script>
+    function captureFrame() {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0);
+        blobData.push(canvasToBlob(canvas));
+        const img = document.createElement('img');
+        img.src = canvas.toDataURL('image/jpeg');
+        img.classList.add('capture'); // For styling
+        img.style.height = "183px";
+        img.style.padding = "1px";
+        /*const div = document.createElement('div');
+        div.innerHTML = img;
+        div.style.float = "left";
+        return div;*/
+        return img;
+    }
+
+    toggleCamBtn.addEventListener('click', () => {
+        if (isCameraOn) {
+            stopCamera();
+            toggleCamBtn.textContent = "TURN ON";
+        } else {
+            startCamera();
+            toggleCamBtn.textContent = "TURN OFF";
+        }
+        isCameraOn = !isCameraOn;
+    });
+
+    async function startCamera() {
+        try {
+            mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = mediaStream;
+        } catch (error) {
+            console.error('Error accessing camera:', error);
+        }
+    }
+
+    function stopCamera() {
+        if (mediaStream) {
+            mediaStream.getTracks().forEach(track => track.stop());
+            video.srcObject = null;
+        }
+    }
+
+    function canvasToBlob(canvas) {
+        return new Promise(resolve => {
+            canvas.toBlob(resolve, 'image/jpeg', 0.9); // 0.9 is quality (0-1)
+        });
+    }
+  </script>
 
 </body>
 
