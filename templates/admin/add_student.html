@@ -86,7 +86,7 @@
     <header class="header_section ">
       <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container ">
-          <a class="navbar-brand" href="/">
+          <a class="navbar-brand" href="/static">
             <span>
               AMS-GRP6
             </span>
@@ -99,13 +99,13 @@
               <div class="d-flex mx-auto flex-column flex-lg-row align-items-center">
                 <ul class="navbar-nav  ">
                   <li class="nav-item active">
-                    <a class="nav-link" href="{{ url_for('home') }}">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="{{ url_for('admin.home') }}">Home <span class="sr-only">(current)</span></a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('add_student') }}"> Add Student</a>
+                    <a class="nav-link" href="{{ url_for('admin.add_student') }}"> Add Student</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('take_attendance') }}">Take Attendance</a>
+                    <a class="nav-link" href="{{ url_for('admin.take_attendance') }}">Take Attendance</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="#">Reports</a>
