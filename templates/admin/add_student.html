@@ -138,15 +138,14 @@
             </b>
           </div>
           <div class="form_container">
-            <form action="/results/" method="POST">
               <div>
-                <input type="text" placeholder="Reg.No" max="10" name="regNo" />
+                <input type="text" placeholder="Reg.No" max="10" name="regNo" id="regNo" required/>
               </div>
               <div>
-                <input type="text" placeholder="Name" max="10" name="regNo" />
+                <input type="text" placeholder="Name" max="10" name="name" id="name" required/>
               </div>
               <div>
-                <select class="form-control" style="height: 50px;">
+                <select class="form-control" style="height: 50px;" name="course" id="course" required>
                   <option>Select Course</option>
                   <option>MS in Artificial Intelligence</option>
                   <option>MS in Computer Science</option>
@@ -157,11 +156,10 @@
                 <p>Captured Images Goes Here ....</p></div>
               <div>&nbsp;</div>
               <div class="btn_box">
-                <button>
+                <button id="train_data">
                   Train Data
                 </button>
               </div>
-            </form>
           </div>
         </div>
         <div class="col-md-6" align="center">
@@ -332,8 +330,8 @@
             capturesContainer.removeChild(capturesContainer.firstChild);
         }
         blobData = new Array();
-        const numCaptures = parseInt(numCapturesInput.value, 10); // Get N from input
-        const interval = Math.floor(video.duration / numCaptures) * 1000; // Calculate time between captures in milliseconds
+        const numCaptures = parseInt(numCapturesInput.value, 10);
+        const interval = Math.floor(video.duration / numCaptures) * 1000;
 
         for (let i = 0; i < numCaptures; i++) {
             setTimeout(() => {
@@ -341,7 +339,6 @@
                 capturesContainer.appendChild(capture);
             }, i * interval);
         }
-        console.log(blobData);
         document.getElementById("imgCnt").textContent = numCaptures;//capturesContainer.childElementCount;
     });
 
@@ -375,9 +372,11 @@
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         canvas.getContext('2d').drawImage(video, 0, 0);
-        blobData.push(canvasToBlob(canvas));
         const img = document.createElement('img');
-        img.src = canvas.toDataURL('image/jpeg');
+        imgSrc = canvas.toDataURL('image/jpeg');
+        img.src = imgSrc
+        blobData.push(imgSrc.replace("data:image/jpeg;base64,", ""));
+        console.log(imgSrc.replace("data:image/jpeg;base64,", ""));
         img.classList.add('capture'); // For styling
         img.style.height = "183px";
         img.style.padding = "1px";
@@ -414,12 +413,29 @@
             video.srcObject = null;
         }
     }
+  </script>
 
-    function canvasToBlob(canvas) {
-        return new Promise(resolve => {
-            canvas.toBlob(resolve, 'image/jpeg', 0.9); // 0.9 is quality (0-1)
-        });
-    }
+  <script type="text/javascript">
+    $(document).ready(function() {
+    $("#train_data").click(
+             function() {
+              alert("Data is being sent to the server !");
+              const dataToSend = {
+                regNo: document.getElementById("regNo").value.toString(),
+                name: document.getElementById("name").value.toString(),
+                images: blobData
+              };
+              alert(dataToSend);
+              console.log(dataToSend);
+              const apiUrl = "/admin/register_student/";
+
+              $.post(apiUrl, dataToSend, function(response) {
+                console.log("API Response:", response);
+              }).fail(function(error) {
+                console.error("API Error:", error);
+              });
+            });
+    });
   </script>
 
 </body>
