@@ -105,10 +105,16 @@
                     <a class="nav-link" href="{{ url_for('admin.add_student') }}"> Add Student</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.take_attendance') }}">Take Attendance</a>
+                    <a class="nav-link" href="{{ url_for('admin.add_faculty') }}">Add Faculty</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Reports</a>
+                    <a class="nav-link" href="{{ url_for('admin.add_faculty') }}">Add Department</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin.add_class') }}">Add Class</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin.reports') }}">Reports</a>
                   </li>
                 </ul>
               </div>
@@ -172,7 +178,7 @@
                   <p style="font-size: 0px;">&nbsp;</p>
                   <button id="captureBtn" style="height: 35px; font-size: 10px; justify-content: center;">Capture</button>
                   <td style="justify-content: center; align-content: center;">
-                  <input type="number" id="numCaptures" value="5" min="1" style="font-size: 15px; border: 1px solid grey; width: 110px;">
+                  <input type="number" id="numCaptures" value="25" min="1" style="font-size: 15px; border: 1px solid grey; width: 110px;">
                   <p style="font-size: 12px;">Total Images: <span id="imgCnt">0</span></p>
                 </td>
                 <td>
@@ -431,6 +437,7 @@
 
               $.post(apiUrl, dataToSend, function(response) {
                 console.log("API Response:", response);
+                alert(response);
               }).fail(function(error) {
                 console.error("API Error:", error);
               });

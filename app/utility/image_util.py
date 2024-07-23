@@ -1,6 +1,7 @@
 import base64
 from PIL import Image
 from io import BytesIO
+import os
 
 def base64_to_image(base64_string):
     '''
@@ -32,3 +33,14 @@ def show_image(image):
     :return: None
     '''
     image.show()
+
+def save_image(image, path_to_save, filename):
+    '''
+    This method saves an image
+    :param image:
+    :param filename:
+    :return:
+    '''
+    if(not os.path.exists(path_to_save)):
+        os.mkdir(path_to_save)
+    image.save(os.path.join(path_to_save, filename))

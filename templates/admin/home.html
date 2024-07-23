@@ -58,10 +58,16 @@
                     <a class="nav-link" href="{{ url_for('admin.add_student') }}"> Add Student</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.take_attendance') }}">Take Attendance</a>
+                    <a class="nav-link" href="{{ url_for('admin.add_faculty') }}">Add Faculty</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Reports</a>
+                    <a class="nav-link" href="{{ url_for('admin.add_faculty') }}">Add Department</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin.add_class') }}">Add Class</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin.reports') }}">Reports</a>
                   </li>
                 </ul>
               </div>
@@ -93,7 +99,7 @@
               Students
             </div>
             <div class="card-body">
-              <h2>10</h2>
+              <h2>{{ counts["students"] }}</h2>
             </div>
           </div>
         </div>
@@ -103,7 +109,7 @@
               Faculty
             </div>
             <div class="card-body">
-              <h2>10</h2>
+              <h2>{{ counts["faculty"] }}</h2>
             </div>
           </div>
         </div>
@@ -113,7 +119,7 @@
               Reports
             </div>
             <div class="card-body">
-              <h2>10</h2>
+              <h2>{{ counts["departments"] }}</h2>
             </div>
           </div>
         </div>
