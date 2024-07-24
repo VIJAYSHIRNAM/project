@@ -128,18 +128,12 @@
                     <a class="nav-link" href="{{ url_for('admin.add_faculty') }}">Add Faculty</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.add_faculty') }}">Add Department</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.add_class') }}">Add Class</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.reports') }}">Reports</a>
+                    <a class="nav-link" href="{{ url_for('admin.add_department') }}">Add Department</a>
                   </li>
                 </ul>
               </div>
               <div class="quote_btn-container">
-                <a href="">
+                <a href="/auth/logout">
                   <span>
                     Logout
                   </span>
@@ -161,22 +155,20 @@
         <div class="col-md-8">
           <div class="heading_container">
             <b>
-              DEPARTMENTS
+              FACULTY
             </b>
           </div>
             <div class="container" style="max-height: 500px; overflow-y: scroll;">
                 <table class="table table-bordered" id="fac_tbl">
                     <thead>
                         <tr>
-                            <th>S.No</th>
-                            <th>Report ID</th>
-                            <th></th>
+                            <th>ID</th>
+                            <th>NAME</th>
                         </tr>
                     </thead>
                     <tbody>
                     {% for faculty in data %}
                         <tr>
-                            <td>{{ loop.index }}</td>
                             <td>{{ faculty["regNo"] }}</td>
                             <td>{{ faculty["name"] }}</td>
                         </tr>
@@ -201,7 +193,7 @@
             <div class="info_detail">
               <a href="index.html">
                 <h4>
-                  AMS-GRP9
+                  AMS-GRP6
                 </h4>
               </a>
               <p>

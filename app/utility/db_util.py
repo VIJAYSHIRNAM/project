@@ -22,5 +22,9 @@ class DBUtil:
         collection = self.db[collection]
         return collection.count_documents(data)
 
+    def get_last(self, collection, data={}):
+        collection = self.db[collection]
+        return list(collection.find(data))[-1]
+
     def close(self):
         self.client.close()

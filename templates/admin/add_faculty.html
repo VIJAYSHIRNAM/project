@@ -108,18 +108,12 @@
                     <a class="nav-link" href="{{ url_for('admin.add_faculty') }}">Add Faculty</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.add_faculty') }}">Add Department</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.add_class') }}">Add Class</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.reports') }}">Reports</a>
+                    <a class="nav-link" href="{{ url_for('admin.add_department') }}">Add Department</a>
                   </li>
                 </ul>
               </div>
               <div class="quote_btn-container">
-                <a href="">
+                <a href="/auth/logout">
                   <span>
                     Logout
                   </span>
@@ -137,7 +131,7 @@
   <section class="contact_section layout_padding">
     <div class="container">
       <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-6">
           <div class="heading_container">
             <b>
               ADD FACULTY
@@ -146,7 +140,7 @@
           <div class="form_container">
             <form action="{{ url_for('admin.add_faculty') }}" method="POST">
               <div>
-                <input type="text" placeholder="Reg.No" max="10" name="regNo" id="regNo" required/>
+                <input type="text" placeholder="Reg.No" max="10" name="regNo" id="regNo" value="{{uid}}"/>
               </div>
               <div>
                 <input type="text" placeholder="Name" max="10" name="name" id="name" required/>
@@ -155,7 +149,7 @@
                 <select class="form-control" style="height: 50px;" name="course" id="course" required>
                   <option>Select Course</option>
                   {% for dept in departments %}
-                  <option>{{ dept["name"] }}</option>
+                  <option value="{{ dept['name'] }}">{{ dept["name"] }}</option>
                   {% endfor %}
                 </select>
               </div>
@@ -166,11 +160,11 @@
             </form>
           </div>
         </div>
-        <!-- <div class="col-md-6" style="border: 1px solid gray; border-radius: 10px; text-align: center;" id="fac_view">
+        <div class="col-md-6" style="border: 1px solid gray; border-radius: 10px; text-align: center;" id="fac_view">
           <div class="heading_container">
               <u>FACULTY</u>
           </div>
-        </div> -->
+        </div>
       </div>
     </div>
   </section>
@@ -186,7 +180,7 @@
             <div class="info_detail">
               <a href="index.html">
                 <h4>
-                  AMS-GRP9
+                  AMS-GRP6
                 </h4>
               </a>
               <p>
@@ -289,9 +283,6 @@
         const doc = parser.parseFromString(html, 'text/html');
         const table = doc.getElementById('fac_tbl');
         const rows = table.rows;
-        for (let i = 0; i < rows.length; i++) {
-          rows[i].deleteCell(-1); // Delete the last cell in each row
-        }
         table.style.fontSize = "10px;"
         // Find the container in main.html where you want to embed the table
         const container = document.getElementById('fac_view');

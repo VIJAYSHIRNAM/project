@@ -61,18 +61,12 @@
                     <a class="nav-link" href="{{ url_for('admin.add_faculty') }}">Add Faculty</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.add_faculty') }}">Add Department</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.add_class') }}">Add Class</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin.reports') }}">Reports</a>
+                    <a class="nav-link" href="{{ url_for('admin.add_department') }}">Add Department</a>
                   </li>
                 </ul>
               </div>
               <div class="quote_btn-container">
-                <a href="">
+                <a href="/auth/logout">
                   <span>
                     Logout
                   </span>
@@ -116,7 +110,7 @@
         <div class="col-3">
           <div class="card">
             <div class="card-header">
-              Reports
+              Departments
             </div>
             <div class="card-body">
               <h2>{{ counts["departments"] }}</h2>
@@ -129,7 +123,7 @@
               Schedules
             </div>
             <div class="card-body">
-              <h2>10</h2>
+              <h2>{{ counts["classes"] }}</h2>
             </div>
           </div>
         </div>
@@ -141,10 +135,10 @@
         <div class="col-6">
           <div class="card">
             <div class="card-header">
-              Stats
+              Attendance Reports
             </div>
             <div class="card-body">
-              <h2>10</h2>
+              <h2>{{ counts["reports"] }}</h2>
             </div>
           </div>
         </div>
@@ -163,7 +157,7 @@
             <div class="info_detail">
               <a href="index.html">
                 <h4>
-                  AMS-GRP9
+                  AMS-GRP6
                 </h4>
               </a>
               <p>

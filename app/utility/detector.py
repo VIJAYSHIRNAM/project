@@ -10,6 +10,7 @@ class Detector():
         # Capture video from webcam
         self.cap = cv2.VideoCapture(0)
         self.cap.release()
+        self.data = []
 
     # Define the transformation
     def preprocess_image(self, image, output_shape=(217, 217)):
@@ -40,6 +41,7 @@ class Detector():
                 #print(class_id, runner.classes)
                 # Display the prediction on the frame
                 label = output # f"{output}: {confidence:.2f}"
+                self.data.append(label)
                 cv2.putText(frame, label, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 ret1, buffer = cv2.imencode('.jpg', frame)

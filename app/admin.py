@@ -3,10 +3,9 @@ from flask import Blueprint, render_template, redirect, request, Response, make_
 import json
 from app.utility.image_util import create_image_from_bytes, base64_to_image, show_image, save_image
 from app.utility.common_util import immutable_to_dict, face_convertor
-from app.utility.db_util import DBUtil
 import pathlib
 import os
-from app.utility.detector import Detector
+from app.auth import login_required
 
 admin_bp = Blueprint('admin', __name__, url_prefix='/admin/')
 
@@ -17,7 +16,7 @@ def home():
         "students" : db_util.count("student"),
         "faculty" : db_util.count("faculty"),
         "departments" : db_util.count("department"),
-        "schedules" : db_util.count("schedule"),
+        "classes" : db_util.count("class"),
         "reports" : db_util.count("report")
     })
 
@@ -36,16 +35,22 @@ def add_department():
 def view_departments():
     db_util = current_app.config['db_util']
     return render_template("admin/view_departments.html", data = db_util.get_all("department"))
+
 @admin_bp.route("/add_faculty/", methods = ["GET", "POST"])
 def add_faculty():
     db_util = current_app.config['db_util']
     if(request.method == "POST"):
         fac_data = immutable_to_dict(request.form)
+        print(fac_data)
         if(db_util.count("faculty", {"regNo" : fac_data["regNo"]}) == 0):
+            fac_data["uname"] = f"{fac_data['regNo']}@ams.com"
+            fac_data["password"] = f"{fac_data['name'][:3]}@{fac_data['regNo']}$@"
             db_util.insert("faculty", fac_data)
             print("Data Inserted Successfully !")
             return redirect(url_for('admin.view_faculty'))
-    return render_template("admin/add_faculty.html", departments = db_util.get_all("department"))
+    return render_template("admin/add_faculty.html",
+                           departments = db_util.get_all("department"),
+                           uid = int(db_util.get_last('faculty')["regNo"]) + 1)
 
 @admin_bp.route("/view_faculty/")
 def view_faculty():
@@ -61,7 +66,9 @@ def start():
 @admin_bp.route("/add_student/")
 def add_student():
     db_util = current_app.config['db_util']
-    return render_template("admin/add_student.html", data = db_util.get_all('department'))
+    return render_template("admin/add_student.html",
+                           data = db_util.get_all('department'),
+                           uid = int(db_util.get_last('student')["regNo"]) + 1)
 
 @admin_bp.route("/register_student/", methods=["POST"])
 def register_student():
@@ -70,6 +77,8 @@ def register_student():
     if(request.method == "POST"):
         data = immutable_to_dict(request.form)
         data["images"] = data.pop("images[]")
+        data["uname"] = f"{data['regNo']}@ams.com"
+        data["password"] = f"{data['name'][:3]}@{data['regNo']}$@"
         with open("dummy.json", "w") as writer:
             json.dump(data, writer)
         for img, cnt in zip(data["images"], range(len(data["images"]))):
